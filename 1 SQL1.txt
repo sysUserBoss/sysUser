@@ -1,0 +1,632 @@
+Select Distinct M.CD_SYNC_STAT, M.CD_RDG_TYPE, M.CD_MDM_RDG_REASON, C.DECODE, R.CD_ROW_STAT, R.CD_MDM_READING_TYPE
+ From MDMS_READINGS_GATEWAY M, READING_TYPE R, CODES_TABLES C
+Where R.CD_RDG_TYPE = M.CD_RDG_TYPE
+  And C.CODE        = M.CD_MDM_RDG_REASON
+  And C.TABLE_NAME  = 'CIS44532'
+SELECT DISTINCT GRANTEE, PRIVILEGE
+  FROM USER_TAB_PRIVS
+ WHERE TABLE_NAME = 'PREMISE'
+    OR TABLE_NAME = 'BILL_ACCT'
+ORDER BY GRANTEE, PRIVILEGE
+
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INDEX, INSERT, ON COMMIT REFRESH, QUERY REWRITE, REFERENCES, SELECT, UPDATE ON ON_DEMAND_HISTORY TO CSMQPPRT;
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INSERT, ON COMMIT REFRESH, QUERY REWRITE, SELECT, UPDATE ON ON_DEMAND_HISTORY TO UE_CSS_USER;
+GRANT DELETE, INSERT, SELECT, UPDATE ON ON_DEMAND_HISTORY TO EIM_IDR_ETL;
+GRANT SELECT ON ON_DEMAND_HISTORY TO PUBLIC;
+
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INDEX, INSERT, ON COMMIT REFRESH, QUERY REWRITE, REFERENCES, SELECT, UPDATE ON ON_DEMAND_HISTORY_RDGS TO CSMQPPRT;
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INSERT, ON COMMIT REFRESH, QUERY REWRITE, SELECT, UPDATE ON ON_DEMAND_HISTORY_RDGS TO UE_CSS_USER;
+GRANT DELETE, INSERT, SELECT, UPDATE ON ON_DEMAND_HISTORY_RDGS TO EIM_IDR_ETL;
+GRANT SELECT ON ON_DEMAND_HISTORY_RDGS TO PUBLIC;
+
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INDEX, INSERT, ON COMMIT REFRESH, QUERY REWRITE, REFERENCES, SELECT, UPDATE ON ON_DEMAND_HISTORY TO CSMQSYSK;
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INSERT, ON COMMIT REFRESH, QUERY REWRITE, SELECT, UPDATE ON ON_DEMAND_HISTORY TO UE_CSS_USER;
+GRANT DELETE, INSERT, SELECT, UPDATE ON ON_DEMAND_HISTORY TO EIM_IDR_ETL;
+GRANT SELECT ON ON_DEMAND_HISTORY TO PUBLIC;
+
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INDEX, INSERT, ON COMMIT REFRESH, QUERY REWRITE, REFERENCES, SELECT, UPDATE ON ON_DEMAND_HISTORY_RDGS TO CSMQPPRT;
+GRANT ALTER, DEBUG, DELETE, FLASHBACK, INSERT, ON COMMIT REFRESH, QUERY REWRITE, SELECT, UPDATE ON ON_DEMAND_HISTORY_RDGS TO UE_CSS_USER;
+GRANT DELETE, INSERT, SELECT, UPDATE ON ON_DEMAND_HISTORY_RDGS TO EIM_IDR_ETL;
+GRANT SELECT ON ON_DEMAND_HISTORY_RDGS TO PUBLIC;
+
+SELECT * FROM USER_TAB_PRIVS WHERE TABLE_NAME = 'ON_DEMAND_HISTORY'
+
+-------------------------------------------------------------------
+
+DROP SEQUENCE SEQ_KY_ON_DMND_RDG_RQST;
+CREATE SEQUENCE SEQ_KY_ON_DMND_RDG_RQST
+     MINVALUE 1
+     MAXVALUE 999999999
+     START WITH 1
+     INCREMENT BY 1
+     NOCACHE
+;
+
+INSERT INTO MY_ON_DEMAND_HISTORY
+VALUES (SEQ_KY_ON_DMND_RDG_RQST.NEXTVAL
+     , '2403121'                                -- KY_PREM_NO
+     , '53440600'                               -- KY_SPT
+     , ...)
+
+
+SELECT KY_PREM_NO, KY_SPT, KY_MPT_NO, substr(KY_MTR_EQUIP_NO,0,8) as KY_MTR_EQUIP_NO, CD_MTR_STAT, CD_MPT_STAT, DT_REMV_CMPLT
+  FROM cssprt1.METER_PT
+ WHERE TRIM(KY_MTR_EQUIP_NO) = substr('14203243A',0,8)
+   AND CD_MTR_STAT = 'O'
+   AND CD_MPT_STAT = 'A'
+   AND DT_REMV_CMPLT > TO_CHAR(SYSDATE, 'YYYY-MM-DD') 
+
+
+INSERT INTO MY_MDMS_READINGS_GATEWAY
+SELECT  substr(KY_PREM_SPT_MPT,1 ,9) AS KY_PREM_NO        ---- to  1
+      , substr(KY_PREM_SPT_MPT,10,8) AS KY_SPT            ---- to  2
+      , substr(KY_PREM_SPT_MPT,18,3) AS KY_MPT_NO         ---- to  3
+      , KY_PREM_SPT_MPT                                   -- 1 to  4
+      , substr(KY_MTR_EQUIP_ID,1 ,8) AS KY_MTR_EQUIP_NO   ---- to  5
+      , substr(KY_MTR_EQUIP_ID,9 ,1) AS CD_MTR_EQUIP_MFGR ---- to  6
+      , KY_MTR_EQUIP_ID                                   -- 2 to  7
+      , KY_SO_NO                                          -- 3 to  8
+      , QY_INDEX                                          -- 5 to  9
+      , CD_RDG_TYPE                                       -- 4 to 10
+      , DT_SET_CMPLT                                      -- 6 to 11
+      , TM_SET_CMPLT                                      -- 7 to 12
+      , DT_REMV_CMPLT                                     -- 8 to 13
+      , TM_REMV_CMPLT                                     -- 9 to 14
+      , ' ' AS DT_PROCESS                                 ---- to 15 current date
+      , CD_PRS_STAT                                       --10 to 16
+      , TS_PRS_PROCESS                                    --11 to 17
+      , CD_SYNC_STAT                                      --12 to 18
+      , CD_ROW_STAT                                       --13 to 19
+      , DT_STAT                                           --14 to 20
+      , KY_USER_ID                                        --15 to 21
+      , ' ' AS CD_MDM_RDG_REASON                          ---- to 22  ok
+  FROM  MY_MDMS_READINGS_GATEWAY_PRT1
+
+
+
+
+
+
+
+
+INSERT INTO MY_MDMS_READINGS_GATEWAY
+SELECT  '91603511' as KY_PREM_NO, '21109965' as KY_SPT, '2' as KY_MPT_NO, KY_PREM_SPT_MPT, '11234523B' as KY_MTR_EQUIP_NO, 'B' as CD_MTR_EQUIP_MFGR,
+        KY_MTR_EQUIP_ID, KY_SO_NO, QY_INDEX, CD_RDG_TYPE, DT_SET_CMPLT, TM_SET_CMPLT, DT_REMV_CMPLT,
+        TM_REMV_CMPLT, '2014-02-11' as DT_PROCESS, CD_PRS_STAT, TS_PRS_PROCESS, CD_SYNC_STAT, CD_ROW_STAT,
+        DT_STAT, KY_USER_ID, '01' as CD_MDM_RDG_REASON
+FROM cssprt1.MDMS_READINGS_GATEWAY
+
+CREATE TABLE MY_AMI_TEST_TRACK
+  AS (SELECT * FROM q125626.MY_AMI_TEST_TRACK);
+
+sqlplus $SW_USER/$SW_PASSWORD
+spool "/t5ambuild/host/host/control/jobs/intfc/outgoing/tst_trk_unld.dat"
+set colsep ","
+select * from AMI_TEST_TRACK;
+spool off
+
+
+
+SELECT KY_BA, KY_PREM_NO
+  FROM BILL_ACCT
+ WHERE KY_PREM_NO IN (104300809, 45204973, 84895093, 1603511, 11713810, 5400100)
+
+INSERT INTO MY_AMI_TEST_TRACKING
+       (SELECT KY_PREM_NO, KY_SPT, KY_MPT_NO, '137031771', KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, '000', '700', DT_SET_CMPLT
+          FROM MY_MDMS_READINGS_GATEWAY
+       )
+
+
+
+set serveroutput on size 1000000;
+DECLARE
+vOUT varchar2(2);
+Begin
+cst_timezone_offset('2013-07-01', '12:59:59', vOUT);
+ DBMS_OUTPUT.Put_line ('out: ' || vOUT);
+end;
+
+
+
+CREATE OR REPLACE SYNONYM "Q126314"."CODES_TABLES" FOR "PTSTPRIS"."CODES_TABLES";
+CREATE OR REPLACE SYNONYM "Q126314"."CODES_TABLES" FOR "Q126314"."MY_CODES_TABLES";
+
+
+CREATE TABLE q126314.MY_CODES_TABLES
+  AS (SELECT * FROM ptstpris.CODES_TABLES);
+
+Select ky_user_id, 'CS1' as cd_esb_src_id, 'FIELDORDERWORKRD' as cd_esb_rqst_type, to_char(systimestamp,'yyyyMMDDhhmissff6') as TS
+  FROM MY_MDMS_READINGS_GATEWAY
+
+grant all on build_customer.INTERVAL to q126314
+
+SELECT DISTINCT
+          BA.KY_BA, P.KY_PREM_NO, P.CD_OPER_CNTR, P.KY_MRDG_ASGNMT, P.KY_MTR_BILL_GRP, SP.KY_SPT, SP.CD_SPT_TYPE, MP.KY_MTR_EQUIP_NO
+     FROM BILL_ACCT    BA                                   -- KY_BA
+        , PREMISE      P                                    -- KY_PREM_NO
+        , SERVICE_PT   SP                                   -- KY_PREM_NO, KY_SPT
+        , METER_PT     MP                                   -- KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF
+        , AMI_DEPLOYMENT_CONTROL ADC
+    WHERE BA.KY_BA            = SP.KY_BA
+      AND P.KY_PREM_NO        = SP.KY_PREM_NO
+      AND SP.KY_SPT           = MP.KY_SPT 
+--      AND P.CD_OPER_CNTR      = ADC.CD_OPER_CNTR                                       -- Key ADC
+--      AND P.KY_MRDG_ASGNMT    = ADC.KY_MRDG_ASGNMT                                     -- Key ADC
+--      AND P.KY_MTR_BILL_GRP   = ADC.KY_MTR_BILL_GRP
+      AND SP.CD_SPT_TYPE     IN ('0100', '0200')
+      AND MP.CD_RDG_USE      IN ('02', '15')
+      AND MP.CD_STAT          = 2      
+--      AND BA.KY_BA           IN (9157002, 10021013, 103023853, 110004316, 547023922, 679609177, 1405345291, 2163025005, 9890008132)
+      AND BA.KY_BA           IN (10021013, 110004316, 1405345291, 2163025005)
+    ORDER BY 
+          BA.KY_BA, P.KY_PREM_NO, P.CD_OPER_CNTR, P.KY_MRDG_ASGNMT, P.KY_MTR_BILL_GRP, SP.KY_SPT, SP.CD_SPT_TYPE, MP.KY_MTR_EQUIP_NO
+        ;
+
+
+SELECT DISTINCT
+          BA.KY_BA
+        , BA.CD_BA_STAT, BA.CD_OPER_CNTR
+        , P.KY_PREM_NO
+        , P.KY_MTR_BILL_GRP, P.KY_MRDG_ASGNMT
+        , SP.KY_SPT
+        , SP.CD_SPT_TYPE
+        , MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF
+        , MP.CD_RDG_USE,  MP.QY_NO_OF_DIAL, MP.CD_STAT
+        , I.CD_FREQ_INTRVL, I.CD_INTRVL_TYPE, I.TS_KY_TOT
+        , I.DT_INTRVL_RDG, I.TM_START, I.QY_INTRVL_CNTR
+        , I.CD_INTRVL_SRCE
+        , QY_INTRVL_DATA_1,  QY_INTRVL_DATA_2,  QY_INTRVL_DATA_3,  QY_INTRVL_DATA_4,  QY_INTRVL_DATA_5
+        , QY_INTRVL_DATA_6,  QY_INTRVL_DATA_7,  QY_INTRVL_DATA_8,  QY_INTRVL_DATA_9,  QY_INTRVL_DATA_10
+        , QY_INTRVL_DATA_11, QY_INTRVL_DATA_12, QY_INTRVL_DATA_13, QY_INTRVL_DATA_14, QY_INTRVL_DATA_15
+        , QY_INTRVL_DATA_16, QY_INTRVL_DATA_17, QY_INTRVL_DATA_18, QY_INTRVL_DATA_19, QY_INTRVL_DATA_20
+        , QY_INTRVL_DATA_21, QY_INTRVL_DATA_22, QY_INTRVL_DATA_23, QY_INTRVL_DATA_24, QY_INTRVL_DATA_25
+        , QY_INTRVL_DATA_26, QY_INTRVL_DATA_27, QY_INTRVL_DATA_28, QY_INTRVL_DATA_29, QY_INTRVL_DATA_30
+        , QY_INTRVL_DATA_31, QY_INTRVL_DATA_32, QY_INTRVL_DATA_33, QY_INTRVL_DATA_34, QY_INTRVL_DATA_35
+        , QY_INTRVL_DATA_36, QY_INTRVL_DATA_37, QY_INTRVL_DATA_38, QY_INTRVL_DATA_39, QY_INTRVL_DATA_40
+        , QY_INTRVL_DATA_41, QY_INTRVL_DATA_42, QY_INTRVL_DATA_43, QY_INTRVL_DATA_44, QY_INTRVL_DATA_45
+        , QY_INTRVL_DATA_46, QY_INTRVL_DATA_47, QY_INTRVL_DATA_48, QY_INTRVL_DATA_49, QY_INTRVL_DATA_50
+        , QY_INTRVL_DATA_51, QY_INTRVL_DATA_52, QY_INTRVL_DATA_53, QY_INTRVL_DATA_54, QY_INTRVL_DATA_55
+        , QY_INTRVL_DATA_56, QY_INTRVL_DATA_57, QY_INTRVL_DATA_58, QY_INTRVL_DATA_59, QY_INTRVL_DATA_60
+        , QY_INTRVL_DATA_61, QY_INTRVL_DATA_62, QY_INTRVL_DATA_63, QY_INTRVL_DATA_64, QY_INTRVL_DATA_65
+        , QY_INTRVL_DATA_66, QY_INTRVL_DATA_67, QY_INTRVL_DATA_68, QY_INTRVL_DATA_69, QY_INTRVL_DATA_70
+        , QY_INTRVL_DATA_71, QY_INTRVL_DATA_72, QY_INTRVL_DATA_73, QY_INTRVL_DATA_74, QY_INTRVL_DATA_75
+        , QY_INTRVL_DATA_76, QY_INTRVL_DATA_77, QY_INTRVL_DATA_78, QY_INTRVL_DATA_79, QY_INTRVL_DATA_80
+        , QY_INTRVL_DATA_81, QY_INTRVL_DATA_82, QY_INTRVL_DATA_83, QY_INTRVL_DATA_84, QY_INTRVL_DATA_85
+        , QY_INTRVL_DATA_86, QY_INTRVL_DATA_87, QY_INTRVL_DATA_88, QY_INTRVL_DATA_89, QY_INTRVL_DATA_90
+        , QY_INTRVL_DATA_91, QY_INTRVL_DATA_92, QY_INTRVL_DATA_93, QY_INTRVL_DATA_94, QY_INTRVL_DATA_95
+        , QY_INTRVL_DATA_96, QY_INTRVL_DATA_97, QY_INTRVL_DATA_98, QY_INTRVL_DATA_99, QY_INTRVL_DATA_100
+     FROM BILL_ACCT    BA                                   -- KY_BA
+        , PREMISE      P                                    -- KY_PREM_NO
+        , SERVICE_PT   SP                                   -- KY_PREM_NO, KY_SPT
+        , METER_PT     MP                                   -- KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF
+        , INTERVAL     I
+    WHERE BA.KY_BA         = SP.KY_BA
+      AND P.KY_PREM_NO     = SP.KY_PREM_NO
+      AND SP.KY_SPT        = MP.KY_SPT
+      AND P.KY_PREM_NO     = I.KY_PREM_NO
+      AND SP.KY_SPT        = I.KY_SPT
+      AND MP.KY_MPT_NO     = I.KY_MPT_NO      
+      AND MP.CD_RDG_USE    = '15' --register only
+      AND MP.CD_STAT       = 2 
+      AND I.DT_INTRVL_RDG  > TO_CHAR(TO_DATE(TRIM(MP.DT_EFF), 'YYYY-MM-DD') - 90, 'YYYY-MM-DD')
+      AND I.DT_INTRVL_RDG  < MP.DT_EFF
+      AND I.CD_RDG_STAT    = 'B'
+      AND I.TS_KY_TOT      > '0001-01-01-00.00.00.000001'
+      AND I.CD_INTRVL_TYPE = '1' --currently only apply to kWh
+      AND BA.KY_BA IN ('110004316', '1405345291')
+    ORDER BY 
+          BA.KY_BA
+        , BA.CD_BA_STAT, BA.CD_OPER_CNTR
+        , P.KY_PREM_NO
+        , P.KY_MTR_BILL_GRP, P.KY_MRDG_ASGNMT
+        , SP.KY_SPT
+        , SP.CD_SPT_TYPE
+        , MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF
+        , MP.CD_RDG_USE,  MP.QY_NO_OF_DIAL, MP.CD_STAT
+        , I.CD_FREQ_INTRVL, I.CD_INTRVL_TYPE, I.TS_KY_TOT
+        , I.DT_INTRVL_RDG, I.TM_START, I.QY_INTRVL_CNTR
+        , I.CD_INTRVL_SRCE
+        ;
+
+
+
+   SELECT DISTINCT
+          BA.KY_BA, BA.CD_BA_STAT
+--        , M.CD_AUTOMATION_TYPE          
+--        , BA.CD_OPER_CNTR
+--        , P.KY_PREM_NO, P.KY_MTR_BILL_GRP, P.KY_MRDG_ASGNMT
+        , SP.KY_SPT, SP.CD_SPT_TYPE
+        , MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF, MP.CD_RDG_USE, MP.CD_STAT
+        , RH.KY_RDG, RH.KY_RDG_SEQ_NO, RH.DT_RDG_TO, RH.CD_RDG_STAT, RH.CD_RDG_SRCE, RH.CD_RDG_TYPE_1, RH.QY_INDEX_1, RH.KY_LST_USE_NO
+     FROM BILL_ACCT    BA                                   -- KY_BA
+        , PREMISE      P                                    -- KY_PREM_NO
+        , SERVICE_PT   SP                                   -- KY_PREM_NO, KY_SPT
+        , METER_PT     MP                                   -- KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF
+        , RDG_CONS_HDR RH                                   -- KY_RDG, KY_RDG_SEQ_NO
+--        , METERCODE    M                                    -- ID_STOCK_CODE
+--        , EQUIPMENT    E                                    -- NO_LM_SWTCH_SERIAL, CD_EQUIPMNT_TYPE, NO_VENDOR
+--        , VENDOR       V                                    -- NO_VENDOR
+    WHERE BA.KY_BA         = SP.KY_BA
+      AND P.KY_PREM_NO     = SP.KY_PREM_NO
+      AND SP.KY_SPT        = MP.KY_SPT                                             
+      AND RH.KY_RDG        = MP.KY_RDG
+      AND MP.CD_RDG_USE    = '02' --register only
+      AND MP.CD_STAT       = 2 
+      AND RH.DT_RDG_TO    <= MP.DT_EFF
+      AND (RH.CD_RDG_STAT IN ('B', 'R', 'I')
+       OR (RH.CD_RDG_SRCE IN ('A', 'C') AND RH.CD_RDG_STAT = ' '))
+      AND ((SP.CD_SPT_TYPE = '0100' AND RH.DT_RDG_TO >= TO_CHAR(SYSDATE -395, 'YYYY-MM-DD'))
+       OR ( SP.CD_SPT_TYPE = '0200' AND RH.DT_RDG_TO >= TO_CHAR(TO_DATE(TRIM(MP.DT_EFF), 'YYYY-MM-DD') - 395, 'YYYY-MM-DD')))
+      AND RH.QY_INDEX_1 > 0 
+      AND RH.KY_LST_USE_NO > 0
+          --AND MP.KY_MTR_EQUIP_NO   = E.NO_LM_SWTCH_SERIAL
+          --AND MP.CD_MTR_EQUIP_MFGR = V.CD_MTR_EQUIP_MFGR
+          --AND M.ID_STOCK_CODE      = E.ID_STOCK_CODE
+          --AND V.NO_VENDOR          = E.NO_VENDOR
+          --AND E.CD_EQUIPMNT_TYPE  IN ('10', '15')
+          --AND M.CD_AUTOMATION_TYPE = 'I'
+               --AND BA.CD_BA_STAT = '09'
+       --AND BA.KY_BA IN ('115072045', '547023922', '679609177', '1969308317', '4750000417', '5090000319', '6494307134')
+    ORDER BY 
+          BA.KY_BA
+--        , M.CD_AUTOMATION_TYPE          
+--        , BA.CD_OPER_CNTR
+--        , P.KY_PREM_NO, P.KY_MTR_BILL_GRP, P.KY_MRDG_ASGNMT
+        , SP.KY_SPT, SP.CD_SPT_TYPE
+        , MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF, MP.CD_RDG_USE, MP.CD_STAT
+        , RH.KY_RDG, RH.KY_RDG_SEQ_NO, RH.DT_RDG_TO, RH.CD_RDG_STAT, RH.CD_RDG_SRCE, RH.CD_RDG_TYPE_1, RH.QY_INDEX_1, RH.KY_LST_USE_NO
+        ;
+
+
+SELECT DISTINCT 
+          MP.KY_PREM_NO, MP.KY_SPT, MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF, MP.KY_RDG
+        , MP.CD_RDG_USE, MP.QY_NO_OF_DIAL, ADC.CD_OPER_CNTR, ADC.KY_MRDG_ASGNMT, ADC.KY_MTR_BILL_GRP, ADC.DT_DEPLOY_ACTUAL
+     FROM PREMISE P
+        , AMI_DEPLOYMENT_CONTROL ADC
+        , SERVICE_PT SP
+        , METER_PT MP
+        , INTERVAL I
+    WHERE P.CD_OPER_CNTR      = ADC.CD_OPER_CNTR
+      AND P.KY_MRDG_ASGNMT    = ADC.KY_MRDG_ASGNMT
+      AND P.KY_MTR_BILL_GRP   = ADC.KY_MTR_BILL_GRP
+      AND P.KY_PREM_NO        = SP.KY_PREM_NO
+      AND SP.KY_PREM_NO       = MP.KY_PREM_NO
+      AND SP.KY_SPT           = MP.KY_SPT
+      AND P.KY_PREM_NO        = I.KY_PREM_NO      
+      AND SP.KY_SPT           = I.KY_SPT
+      AND MP.KY_MPT_NO        = I.KY_MPT_NO
+      AND ADC.DT_DEPLOY_ACTUAL <= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+      AND SP.CD_SPT_TYPE     IN ('0100', '0200')
+      AND MP.CD_RDG_USE       = '15'  --interval meter
+      AND MP.CD_STAT          = 2
+      AND DT_INTRVL_RDG  > to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD') - 90, 'YYYY-MM-DD')
+      AND I.DT_INTRVL_RDG  < MP.DT_EFF
+      AND CD_RDG_STAT    = 'B'
+      AND TS_KY_TOT      > '0001-01-01-00.00.00.000001'
+      AND CD_INTRVL_TYPE = '1' --currently only apply to kWh      
+    ORDER BY KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF;
+
+
+
+SELECT I.CD_FREQ_INTRVL, I.CD_INTRVL_TYPE, I.DT_INTRVL_RDG, I.TS_KY_TOT, I.TM_START, I.QY_INTRVL_CNTR, I.QY_INTRVL_DATA_1, I.QY_INTRVL_DATA_100
+     FROM INTERVAL I,
+     (SELECT DISTINCT 
+          MP.KY_PREM_NO, MP.KY_SPT, MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF, MP.KY_RDG
+        , MP.CD_RDG_USE, MP.QY_NO_OF_DIAL, ADC.CD_OPER_CNTR, ADC.KY_MRDG_ASGNMT, ADC.KY_MTR_BILL_GRP, ADC.DT_DEPLOY_ACTUAL
+     FROM PREMISE P
+        , AMI_DEPLOYMENT_CONTROL ADC
+        , SERVICE_PT SP
+        , METER_PT MP
+    WHERE P.CD_OPER_CNTR      = ADC.CD_OPER_CNTR
+      AND P.KY_MRDG_ASGNMT    = ADC.KY_MRDG_ASGNMT
+      AND P.KY_MTR_BILL_GRP   = ADC.KY_MTR_BILL_GRP
+      AND P.KY_PREM_NO        = SP.KY_PREM_NO
+      AND SP.KY_PREM_NO       = MP.KY_PREM_NO
+      AND SP.KY_SPT           = MP.KY_SPT
+      AND ADC.DT_DEPLOY_ACTUAL <= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+      AND SP.CD_SPT_TYPE     IN ('0100', '0200')
+      AND MP.CD_RDG_USE       = '15'  --interval meter
+      AND MP.CD_STAT          = 2
+      --has not sent the reading history
+      AND NOT EXISTS (
+          SELECT * FROM AMI_PRIOR_RDG_HIST_CONTROL APRHC 
+           WHERE APRHC.KY_PREM_NO        = MP.KY_PREM_NO
+             AND APRHC.KY_SPT            = MP.KY_SPT
+             AND APRHC.KY_MPT_NO         = MP.KY_MPT_NO
+             AND APRHC.KY_MTR_EQUIP_NO   = MP.KY_MTR_EQUIP_NO
+             AND APRHC.CD_MTR_EQUIP_MFGR = MP.CD_MTR_EQUIP_MFGR
+                      )
+    ORDER BY KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF)  M
+     
+    WHERE I.KY_PREM_NO     = M.KY_PREM_NO
+      AND I.KY_SPT         = M.KY_SPT
+      AND I.KY_MPT_NO      = M.KY_MPT_NO
+      AND I.DT_INTRVL_RDG  > to_char(to_date(TRIM(M.dt_eff), 'YYYY-MM-DD') - 90, 'YYYY-MM-DD')
+      AND I.DT_INTRVL_RDG  < M.DT_EFF
+      AND I.CD_RDG_STAT    = 'B'
+      AND I.TS_KY_TOT      > '0001-01-01-00.00.00.000001'
+      AND I.CD_INTRVL_TYPE = '1' --currently only apply to kWh
+    ORDER BY I.DT_INTRVL_RDG, I.TM_START;
+
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+SELECT count(*) FROM cssprt1.MDMS_DBSYNC_DETAIL D, cssprt1.MDMS_DBSYNC_HEADER H
+WHERE H.KY_TRANSACTION_ID = D.KY_TRANSACTION_ID
+  AND H.CD_RECORD_TYPE    = D.CD_RECORD_TYPE
+  AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID)) < 10
+  AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID_REL)) < 10
+  AND LENGTH(TRIM(D.KY_MODULE_ID)) < 10
+
+
+INSERT INTO MY_MDMS_DBSYNC_DETAIL
+SELECT D.KY_TRANSACTION_ID, D.CD_RECORD_TYPE, D.KY_PREM_SPT_MPT, D.TX_BA, D.TX_CUST_NO, D.KY_PREM_NO, D.CD_SERVICE_TYPE
+     , TRIM(D.KY_MTR_EQUIP_ID) AS KY_MTR_EQUIP_ID, D.CD_CUST_CLASS, D.KY_MTR_BILL_GRP, D.KY_CYCLE_OPCNTR_ROUTE
+     , D.CD_MDM_RATE, D.CD_MDM_PROGRAM, D.QY_SCALING_CONSTANT, D.QY_NO_OF_DIAL, D.DT_EFF_MPT, D.CD_DEVICE_RDG_METHOD
+     , D.DT_SET_CMPLT, D.DT_REMV_CMPLT, D.QY_PHYS_RDG_MULT, D.QY_PULSE_ROTATE, D.AEP_TEST_CODE, D.CD_READ_VENDOR
+     , D.CD_DEVICE_MTR_RDG_GATEWAY, D.QY_RDG_MULT, D.NO_TRANSFORMER_RATIO_CT, D.NO_TRANSFORMER_RATIO_PT
+     , D.QY_UNIT_MEASURE, D.TX_POWER_STATUS_IND, D.QY_INSTALLED_MTR_VOLT, D.QY_GPS_LONGITUDE, D.QY_GPS_LATITUDE
+     , D.CD_GPS_CONFIDENCE_FACTOR, D.CD_GPS_STANDARD, D.TX_USAGE_STATUS_IND, D.TX_LOGICAL_DISCONNECT_STATUS
+     , D.TX_MEDICAL_ALERT_IND, D.TX_COGENERATION_IND, D.CD_WEATHER_GROUP, D.CD_OPER_CNTR, D.TX_ADDRESS
+     , D.TX_CITY_STATE_ZIP, D.TX_CITY, D.TX_STATE, D.TX_ZIP, D.NM_COMPRESSED, D.CD_RECORD_DEVICE_TYPE
+     , TRIM(D.KY_MTR_EQUIP_ID_REL) AS KY_MTR_EQUIP_ID_REL, D.CD_MODULE_TYPE, D.CD_CO, D.CD_DEVICE_PROGRAM
+     , TRIM(D.KY_MODULE_ID) AS KY_MODULE_ID, D.DT_DEVICE_STATUS, D.CD_INSIDE_OUTSIDE, D.KY_LOCATION_ID, D.DT_ROW_STAT
+     , D.CD_PROCESS_STATUS
+  FROM cssprt1.MDMS_DBSYNC_DETAIL D, MDMS_DBSYNC_HEADER H
+ WHERE H.KY_TRANSACTION_ID = D.KY_TRANSACTION_ID
+   AND H.CD_RECORD_TYPE    = D.CD_RECORD_TYPE
+   AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID)) < 10
+   AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID_REL)) < 10
+   AND LENGTH(TRIM(D.KY_MODULE_ID)) < 10
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+SELECT distinct count(*) FROM cssprt1.RDG_CONS_DTL D, cssprt1.RDG_CONS_HDR H
+WHERE H.KY_RDG        = D.KY_RDG
+  AND H.KY_RDG_SEQ_NO = D.KY_RDG_SEQ_NO
+
+
+INSERT INTO MY_RDG_CONS_DTL
+SELECT distinct D.*
+  FROM cssprt1.RDG_CONS_DTL D, cssprt1.RDG_CONS_HDR H
+WHERE H.KY_RDG        = D.KY_RDG
+  AND H.KY_RDG_SEQ_NO = D.KY_RDG_SEQ_NO
+ ORDER BY D.KY_BA, D.KY_RDG, D.KY_RDG_SEQ_NO, D.KY_DTL_NO
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+CREATE OR REPLACE SYNONYM SERVICE_PT FOR MY_SERVICE_PT
+--------------------------------------------------------------------------------------------------------------------------------
+
+SELECT DISTINCT RCH.KY_RDG, RCH.DT_RDG_TO, MP.DT_EFF, MP.KY_RDG, RCH.CD_RDG_STAT, RCH.CD_RDG_SRCE,
+       to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD')  - 365, 'YYYY-MM-DD') as DE
+     FROM RDG_CONS_HDR RCH, METER_PT MP
+    WHERE RCH.KY_MTR_EQUIP_NO = MP.KY_MTR_EQUIP_NO
+      AND RCH.KY_RDG          > MP.KY_RDG
+      AND (CD_RDG_STAT       IN ('B', 'R', 'I')
+       OR (CD_RDG_SRCE       IN ('A', 'C') AND CD_RDG_STAT = ' '))
+      AND RCH.DT_RDG_TO          >= to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD')  - 365, 'YYYY-MM-DD')
+      AND RCH.DT_RDG_TO      <= MP.DT_EFF
+      order by MP.DT_EFF
+--------------------------------------------------------------------------------------------------------------------------------
+
+Insert into q126314.METER_PT
+      (SELECT * FROM cssprt1.METER_PT C 
+        WHERE C.KY_PREM_NO not in (SELECT KY_PREM_NO FROM q126314.METER_PT)
+          AND C.KY_SPT     not in (SELECT KY_SPT     FROM q126314.METER_PT)
+      )
+--------------------------------------------------------------------------------------------------------------------------------
+
+SELECT DISTINCT MDD.KY_PREM_NO, MDD.KY_MTR_EQUIP_ID
+        , RCH.KY_RDG, RCH.KY_RDG_SEQ_NO
+        , MP.KY_PREM_NO, MP.KY_SPT, MP.KY_MPT_NO, MP.DT_EFF, RCH.DT_RDG_TO, ADC.DT_DEPLOY_ACTUAL, SP.CD_SPT_TYPE
+        , MP.CD_RDG_USE, MP.CD_STAT, MP.KY_RDG, RCH.KY_RDG_SEQ_NO, RCH.CD_RDG_STAT, RCH.CD_RDG_SRCE
+     FROM PREMISE P
+        , AMI_DEPLOYMENT_CONTROL ADC
+        , SERVICE_PT SP
+        , METER_PT MP
+        , RDG_CONS_HDR RCH
+        , RDG_CONS_DTL RCD
+        , MDMS_DBSYNC_DETAIL MDD
+    WHERE P.CD_OPER_CNTR        = ADC.CD_OPER_CNTR                                       -- Key ADC
+      AND P.KY_MRDG_ASGNMT      = ADC.KY_MRDG_ASGNMT                                     -- Key ADC
+      AND P.KY_MTR_BILL_GRP     = ADC.KY_MTR_BILL_GRP                                    -- Key ADC
+      AND P.KY_PREM_NO          = SP.KY_PREM_NO
+      AND SP.KY_PREM_NO         = MP.KY_PREM_NO                                          -- Key SP, P
+      AND SP.KY_SPT             = MP.KY_SPT                                              -- Key SP
+      AND ADC.DT_DEPLOY_ACTUAL <= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+      AND SP.CD_SPT_TYPE       IN ('0100', '0200')
+      AND MP.CD_RDG_USE         = '02' --register only
+      AND MP.CD_STAT            = 2
+      AND RCH.KY_RDG            > MP.KY_RDG
+      AND RCH.KY_RDG            = RCD.KY_RDG
+      AND RCH.KY_RDG_SEQ_NO     = RCD.KY_RDG_SEQ_NO
+      AND (RCH.CD_RDG_STAT     IN ('B', 'R', 'I')
+       OR (RCH.CD_RDG_SRCE     IN ('A', 'C') AND CD_RDG_STAT = ' '))
+      AND RCH.DT_RDG_TO        >= to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD')  - 365, 'YYYY-MM-DD')
+      AND RCH.DT_RDG_TO        <= MP.DT_EFF
+      AND MDD.KY_PREM_NO        = MP.KY_PREM_NO
+      AND EXISTS (
+          SELECT * FROM MDMS_DBSYNC_DETAIL MDD                                           -- INDEX(Non) MDD KY_TRANSACTION_ID, CD_RECORD_TYPE
+           WHERE MDD.KY_PREM_NO        = MP.KY_PREM_NO 
+             AND MDD.KY_MTR_EQUIP_ID   = MP.KY_MTR_EQUIP_NO
+             AND MDD.KY_TRANSACTION_ID = (
+                 select max(ky_transaction_id) from MDMS_DBSYNC_HEADER where cd_record_type = 'S' and cd_process_status = 'RecordComplete')
+               )
+    ORDER BY MDD.KY_PREM_NO, MDD.KY_MTR_EQUIP_ID
+
+
+
+SELECT DISTINCT 
+          MP.KY_PREM_NO, MP.KY_SPT, MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF, MP.KY_RDG
+        , MP.CD_RDG_USE, MP.QY_NO_OF_DIAL, ADC.CD_OPER_CNTR, ADC.KY_MRDG_ASGNMT, ADC.KY_MTR_BILL_GRP, ADC.DT_DEPLOY_ACTUAL
+     FROM PREMISE P
+        , AMI_DEPLOYMENT_CONTROL ADC
+        , SERVICE_PT SP
+        , METER_PT MP
+        , INTERVAL I
+    WHERE P.CD_OPER_CNTR      = ADC.CD_OPER_CNTR
+      AND P.KY_MRDG_ASGNMT    = ADC.KY_MRDG_ASGNMT
+      AND P.KY_MTR_BILL_GRP   = ADC.KY_MTR_BILL_GRP
+      AND P.KY_PREM_NO        = SP.KY_PREM_NO
+      AND SP.KY_PREM_NO       = MP.KY_PREM_NO
+      AND SP.KY_SPT           = MP.KY_SPT
+      AND P.KY_PREM_NO        = I.KY_PREM_NO      
+      AND SP.KY_SPT           = I.KY_SPT
+      AND MP.KY_MPT_NO        = I.KY_MPT_NO
+      AND ADC.DT_DEPLOY_ACTUAL <= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+      AND SP.CD_SPT_TYPE     IN ('0100', '0200')
+      AND MP.CD_RDG_USE       = '15'  --interval meter
+      AND MP.CD_STAT          = 2
+      AND DT_INTRVL_RDG  > to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD') - 90, 'YYYY-MM-DD')
+      AND I.DT_INTRVL_RDG  < MP.DT_EFF
+      AND CD_RDG_STAT    = 'B'
+      AND TS_KY_TOT      > '0001-01-01-00.00.00.000001'
+      AND CD_INTRVL_TYPE = '1' --currently only apply to kWh      
+    ORDER BY KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF;
+
+
+
+SELECT I.CD_FREQ_INTRVL, I.CD_INTRVL_TYPE, I.DT_INTRVL_RDG, I.TS_KY_TOT, I.TM_START, I.QY_INTRVL_CNTR, I.QY_INTRVL_DATA_1, I.QY_INTRVL_DATA_100
+     FROM INTERVAL I,
+     (SELECT DISTINCT 
+          MP.KY_PREM_NO, MP.KY_SPT, MP.KY_MPT_NO, MP.KY_MTR_EQUIP_NO, MP.CD_MTR_EQUIP_MFGR, MP.DT_EFF, MP.KY_RDG
+        , MP.CD_RDG_USE, MP.QY_NO_OF_DIAL, ADC.CD_OPER_CNTR, ADC.KY_MRDG_ASGNMT, ADC.KY_MTR_BILL_GRP, ADC.DT_DEPLOY_ACTUAL
+     FROM PREMISE P
+        , AMI_DEPLOYMENT_CONTROL ADC
+        , SERVICE_PT SP
+        , METER_PT MP
+    WHERE P.CD_OPER_CNTR      = ADC.CD_OPER_CNTR
+      AND P.KY_MRDG_ASGNMT    = ADC.KY_MRDG_ASGNMT
+      AND P.KY_MTR_BILL_GRP   = ADC.KY_MTR_BILL_GRP
+      AND P.KY_PREM_NO        = SP.KY_PREM_NO
+      AND SP.KY_PREM_NO       = MP.KY_PREM_NO
+      AND SP.KY_SPT           = MP.KY_SPT
+      AND ADC.DT_DEPLOY_ACTUAL <= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+      AND SP.CD_SPT_TYPE     IN ('0100', '0200')
+      AND MP.CD_RDG_USE       = '15'  --interval meter
+      AND MP.CD_STAT          = 2
+      --has not sent the reading history
+      AND NOT EXISTS (
+          SELECT * FROM AMI_PRIOR_RDG_HIST_CONTROL APRHC 
+           WHERE APRHC.KY_PREM_NO        = MP.KY_PREM_NO
+             AND APRHC.KY_SPT            = MP.KY_SPT
+             AND APRHC.KY_MPT_NO         = MP.KY_MPT_NO
+             AND APRHC.KY_MTR_EQUIP_NO   = MP.KY_MTR_EQUIP_NO
+             AND APRHC.CD_MTR_EQUIP_MFGR = MP.CD_MTR_EQUIP_MFGR
+                      )
+    ORDER BY KY_PREM_NO, KY_SPT, KY_MPT_NO, KY_MTR_EQUIP_NO, CD_MTR_EQUIP_MFGR, DT_EFF)  M
+     
+    WHERE I.KY_PREM_NO     = M.KY_PREM_NO
+      AND I.KY_SPT         = M.KY_SPT
+      AND I.KY_MPT_NO      = M.KY_MPT_NO
+      AND I.DT_INTRVL_RDG  > to_char(to_date(TRIM(M.dt_eff), 'YYYY-MM-DD') - 90, 'YYYY-MM-DD')
+      AND I.DT_INTRVL_RDG  < M.DT_EFF
+      AND I.CD_RDG_STAT    = 'B'
+      AND I.TS_KY_TOT      > '0001-01-01-00.00.00.000001'
+      AND I.CD_INTRVL_TYPE = '1' --currently only apply to kWh
+    ORDER BY I.DT_INTRVL_RDG, I.TM_START;
+
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+SELECT count(*) FROM cssprt1.MDMS_DBSYNC_DETAIL D, cssprt1.MDMS_DBSYNC_HEADER H
+WHERE H.KY_TRANSACTION_ID = D.KY_TRANSACTION_ID
+  AND H.CD_RECORD_TYPE    = D.CD_RECORD_TYPE
+  AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID)) < 10
+  AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID_REL)) < 10
+  AND LENGTH(TRIM(D.KY_MODULE_ID)) < 10
+
+
+INSERT INTO MY_MDMS_DBSYNC_DETAIL
+SELECT D.KY_TRANSACTION_ID, D.CD_RECORD_TYPE, D.KY_PREM_SPT_MPT, D.TX_BA, D.TX_CUST_NO, D.KY_PREM_NO, D.CD_SERVICE_TYPE
+     , TRIM(D.KY_MTR_EQUIP_ID) AS KY_MTR_EQUIP_ID, D.CD_CUST_CLASS, D.KY_MTR_BILL_GRP, D.KY_CYCLE_OPCNTR_ROUTE
+     , D.CD_MDM_RATE, D.CD_MDM_PROGRAM, D.QY_SCALING_CONSTANT, D.QY_NO_OF_DIAL, D.DT_EFF_MPT, D.CD_DEVICE_RDG_METHOD
+     , D.DT_SET_CMPLT, D.DT_REMV_CMPLT, D.QY_PHYS_RDG_MULT, D.QY_PULSE_ROTATE, D.AEP_TEST_CODE, D.CD_READ_VENDOR
+     , D.CD_DEVICE_MTR_RDG_GATEWAY, D.QY_RDG_MULT, D.NO_TRANSFORMER_RATIO_CT, D.NO_TRANSFORMER_RATIO_PT
+     , D.QY_UNIT_MEASURE, D.TX_POWER_STATUS_IND, D.QY_INSTALLED_MTR_VOLT, D.QY_GPS_LONGITUDE, D.QY_GPS_LATITUDE
+     , D.CD_GPS_CONFIDENCE_FACTOR, D.CD_GPS_STANDARD, D.TX_USAGE_STATUS_IND, D.TX_LOGICAL_DISCONNECT_STATUS
+     , D.TX_MEDICAL_ALERT_IND, D.TX_COGENERATION_IND, D.CD_WEATHER_GROUP, D.CD_OPER_CNTR, D.TX_ADDRESS
+     , D.TX_CITY_STATE_ZIP, D.TX_CITY, D.TX_STATE, D.TX_ZIP, D.NM_COMPRESSED, D.CD_RECORD_DEVICE_TYPE
+     , TRIM(D.KY_MTR_EQUIP_ID_REL) AS KY_MTR_EQUIP_ID_REL, D.CD_MODULE_TYPE, D.CD_CO, D.CD_DEVICE_PROGRAM
+     , TRIM(D.KY_MODULE_ID) AS KY_MODULE_ID, D.DT_DEVICE_STATUS, D.CD_INSIDE_OUTSIDE, D.KY_LOCATION_ID, D.DT_ROW_STAT
+     , D.CD_PROCESS_STATUS
+  FROM cssprt1.MDMS_DBSYNC_DETAIL D, MDMS_DBSYNC_HEADER H
+ WHERE H.KY_TRANSACTION_ID = D.KY_TRANSACTION_ID
+   AND H.CD_RECORD_TYPE    = D.CD_RECORD_TYPE
+   AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID)) < 10
+   AND LENGTH(TRIM(D.KY_MTR_EQUIP_ID_REL)) < 10
+   AND LENGTH(TRIM(D.KY_MODULE_ID)) < 10
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+SELECT distinct count(*) FROM cssprt1.RDG_CONS_DTL D, cssprt1.RDG_CONS_HDR H
+WHERE H.KY_RDG        = D.KY_RDG
+  AND H.KY_RDG_SEQ_NO = D.KY_RDG_SEQ_NO
+
+
+INSERT INTO MY_RDG_CONS_DTL
+SELECT distinct D.*
+  FROM cssprt1.RDG_CONS_DTL D, cssprt1.RDG_CONS_HDR H
+WHERE H.KY_RDG        = D.KY_RDG
+  AND H.KY_RDG_SEQ_NO = D.KY_RDG_SEQ_NO
+ ORDER BY D.KY_BA, D.KY_RDG, D.KY_RDG_SEQ_NO, D.KY_DTL_NO
+--------------------------------------------------------------------------------------------------------------------------------
+ 
+CREATE OR REPLACE SYNONYM SERVICE_PT FOR MY_SERVICE_PT
+--------------------------------------------------------------------------------------------------------------------------------
+
+SELECT DISTINCT RCH.KY_RDG, RCH.DT_RDG_TO, MP.DT_EFF, MP.KY_RDG, RCH.CD_RDG_STAT, RCH.CD_RDG_SRCE,
+       to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD')  - 365, 'YYYY-MM-DD') as DE
+     FROM RDG_CONS_HDR RCH, METER_PT MP
+    WHERE RCH.KY_MTR_EQUIP_NO = MP.KY_MTR_EQUIP_NO
+      AND RCH.KY_RDG          > MP.KY_RDG
+      AND (CD_RDG_STAT       IN ('B', 'R', 'I')
+       OR (CD_RDG_SRCE       IN ('A', 'C') AND CD_RDG_STAT = ' '))
+      AND RCH.DT_RDG_TO          >= to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD')  - 365, 'YYYY-MM-DD')
+      AND RCH.DT_RDG_TO      <= MP.DT_EFF
+      order by MP.DT_EFF
+--------------------------------------------------------------------------------------------------------------------------------
+
+Insert into q126314.METER_PT
+      (SELECT * FROM cssprt1.METER_PT C 
+        WHERE C.KY_PREM_NO not in (SELECT KY_PREM_NO FROM q126314.METER_PT)
+          AND C.KY_SPT     not in (SELECT KY_SPT     FROM q126314.METER_PT)
+      )
+--------------------------------------------------------------------------------------------------------------------------------
+
+SELECT DISTINCT MDD.KY_PREM_NO, MDD.KY_MTR_EQUIP_ID
+        , RCH.KY_RDG, RCH.KY_RDG_SEQ_NO
+        , MP.KY_PREM_NO, MP.KY_SPT, MP.KY_MPT_NO, MP.DT_EFF, RCH.DT_RDG_TO, ADC.DT_DEPLOY_ACTUAL, SP.CD_SPT_TYPE
+        , MP.CD_RDG_USE, MP.CD_STAT, MP.KY_RDG, RCH.KY_RDG_SEQ_NO, RCH.CD_RDG_STAT, RCH.CD_RDG_SRCE
+     FROM PREMISE P
+        , AMI_DEPLOYMENT_CONTROL ADC
+        , SERVICE_PT SP
+        , METER_PT MP
+        , RDG_CONS_HDR RCH
+        , RDG_CONS_DTL RCD
+        , MDMS_DBSYNC_DETAIL MDD
+    WHERE P.CD_OPER_CNTR        = ADC.CD_OPER_CNTR                                       -- Key ADC
+      AND P.KY_MRDG_ASGNMT      = ADC.KY_MRDG_ASGNMT                                     -- Key ADC
+      AND P.KY_MTR_BILL_GRP     = ADC.KY_MTR_BILL_GRP                                    -- Key ADC
+      AND P.KY_PREM_NO          = SP.KY_PREM_NO
+      AND SP.KY_PREM_NO         = MP.KY_PREM_NO                                          -- Key SP, P
+      AND SP.KY_SPT             = MP.KY_SPT                                              -- Key SP
+      AND ADC.DT_DEPLOY_ACTUAL <= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+      AND SP.CD_SPT_TYPE       IN ('0100', '0200')
+      AND MP.CD_RDG_USE         = '02' --register only
+      AND MP.CD_STAT            = 2
+      AND RCH.KY_RDG            > MP.KY_RDG
+      AND RCH.KY_RDG            = RCD.KY_RDG
+      AND RCH.KY_RDG_SEQ_NO     = RCD.KY_RDG_SEQ_NO
+      AND (RCH.CD_RDG_STAT     IN ('B', 'R', 'I')
+       OR (RCH.CD_RDG_SRCE     IN ('A', 'C') AND CD_RDG_STAT = ' '))
+      AND RCH.DT_RDG_TO        >= to_char(to_date(TRIM(MP.DT_EFF), 'YYYY-MM-DD')  - 365, 'YYYY-MM-DD')
+      AND RCH.DT_RDG_TO        <= MP.DT_EFF
+      AND MDD.KY_PREM_NO        = MP.KY_PREM_NO
+      AND EXISTS (
+          SELECT * FROM MDMS_DBSYNC_DETAIL MDD                                           -- INDEX(Non) MDD KY_TRANSACTION_ID, CD_RECORD_TYPE
+           WHERE MDD.KY_PREM_NO        = MP.KY_PREM_NO 
+             AND MDD.KY_MTR_EQUIP_ID   = MP.KY_MTR_EQUIP_NO
+             AND MDD.KY_TRANSACTION_ID = (
+                 select max(ky_transaction_id) from MDMS_DBSYNC_HEADER where cd_record_type = 'S' and cd_process_status = 'RecordComplete')
+               )
+    ORDER BY MDD.KY_PREM_NO, MDD.KY_MTR_EQUIP_ID
+
+
+

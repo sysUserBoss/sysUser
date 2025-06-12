@@ -1,0 +1,95 @@
+--   CURSOR csr_meter_main IS
+     INTO v_ky_prem_no, v_ky_spt, v_ky_mpt_no, v_ky_mtr_equip_no, v_cd_mtr_equip_mfgr, v_dt_eff, v_ky_rdg
+        , v_cd_rdg_use, v_cd_oper_cntr, v_ky_mrdg_asgnmt, v_ky_mtr_bill_grp, v_dt_deploy_actual
+             AND MDD.KY_TRANSACTION_ID = v_transactionID  -- to be defind in main.
+
+--   CURSOR csr_rdg_hdr IS
+    WHERE KY_RDG = v_ky_rdg
+      AND DT_RDG_TO    >= v_dt_start_history
+
+--   CURSOR csr_rdg_dtl IS
+    WHERE KY_RDG        = v_ky_rdg
+      AND KY_RDG_SEQ_NO = v_ky_rdg_seq_no;
+
+--   PROCEDURE write_detail
+      IF v_cd_rdg_stat = 'B' OR v_cd_rdg_stat = 'R' THEN
+         v_billable := 'Y';
+         v_billable := 'N';
+        INTO v_cd_measure_type, v_cd_unit_name, v_cd_uom
+       WHERE CD_RDG_TYPE = v_cd_rdg_type;
+      IF v_measure_type > ' ' THEN
+         v_dt_rdg_to_cst := substr(v_dt_rdg_to,1,4) 
+                         || substr(v_dt_rdg_to, 6, 2) 
+                         || substr(v_dt_rdg_to, 9, 2) 
+         v_detail_line   := 'D'               || v_delimiter 
+                         || v_badge_id        || v_delimiter
+                                              || v_delimiter 
+                         || v_ky_prem_spt_mpt || v_delimiter 
+                         || v_measure_type    || v_delimiter 
+                         || v_uom             || v_delimiter 
+                         || v_qy_index        || v_delimiter
+                         || v_uom             || v_delimiter 
+                         || v_dt_rdg_to_cst   || v_delimiter 
+                         || v_dt_rdg_to_cst   || v_delimiter 
+                         || v_billable        || v_delimiter 
+                                              || v_delimiter
+                                              || v_delimiter;
+         UTL_FILE.put_line(v_file_ptr,v_detail_line);
+         v_reg_rec_cnt   := v_reg_rec_cnt + 1;
+
+--start of main program
+   v_rec_cnt            := 0;
+   v_location           := 'devhome/q126314'; --pass the path from the script.  Need to know path?
+   v_filenameRegister   := 'ccb_meter_reads';
+   v_open_mode          := 'w';
+   v_delimiter          := '|';
+   f_code_location      := 'Start of Program';
+   IF UTL_FILE.is_open(v_reg_file_ptr) THEN
+      UTL_FILE.fclose(v_reg_file_ptr);
+   v_systimestamp_string := to_char(systimestamp,'yyyyMMDDhh24miss');  
+   f_code_location       := 'File Open';
+   v_filenameRegister    := rtrim(v_filenameRegister 
+                         || substr(v_systimestamp_string,1,8) || '_' 
+                         || substr(v_systimestamp_string,9,8) || '.dat');
+   v_reg_file_ptr        := UTL_FILE.FOPEN (v_location, v_filenameRegister, v_open_mode);
+   f_code_location       := 'Write Header';
+   v_header              := 'H'             || v_delimiter 
+                         || 'IN'            || v_delimiter 
+                         || v_transactionID || v_delimiter 
+                         || '1.0'           || v_delimiter;
+   UTL_FILE.put_line(v_reg_file_ptr, v_header);
+   f_code_location := 'Obtain transaction id';
+     into v_transactionID
+   f_code_location := 'Main meter cursor';
+   v_reg_rec_cnt   := 0;
+      v_ky_rdg          := ami_meter_rec.ky_rdg;
+      v_ky_prem_spt_mpt := lpad(to_char(ami_meter_rec.ky_prem_no),9,'0') 
+      v_badge_id        := subtstr(ami_meter_rec.ky_mtr_equip_no,1,8) || v_cd_mtr_equip_mfgr;
+        INTO v_current_dt
+      v_dt_start_history := to_char(to_date(ami_meter_rec.dt_eff, 'YYYY-MM-DD') - 395, 'YYYY-MM-DD');
+      f_code_location    := 'Reading Header cursor ' || v_badge_id;
+      FOR rdg_hdr_rec IN csr_rdg_hdr LOOP
+         v_dt_rdg_to := rdg_hdr_rec.dt_rdg_to;
+            v_cd_rdg_type := rdg_hdr_rec.cd_rdg_type_1;
+            v_qy_index    := rdg_hdr_rec.qy_index_1;
+         IF rdg_hdr_rec.cd_rdg_type_2 > ' ' THEN
+            v_cd_rdg_type := rdg_hdr_rec.cd_rdg_type_2;
+            v_qy_index    := rdg_hdr_rec.qy_index_2;
+            v_cd_rdg_type := rdg_hdr_rec.cd_rdg_type_3;
+            v_qy_index    := rdg_hdr_rec.qy_index_3;
+            v_cd_rdg_type := rdg_hdr_rec.cd_rdg_type_4;
+            v_qy_index    := rdg_hdr_rec.qy_index_4;
+            v_ky_rdg := rdg_hdr_rec.ky_rdg;
+            v_ky_rdg_seq_no := rdg_hdr_rec.ky_rdg_seq_no;
+            f_code_location := 'Reading detail cursor';
+               v_cd_rdg_type := rdg_dtl_rec.cd_rdg_type;
+               v_qy_index    := rdg_dtl_rec.qy_index;
+      f_code_location := 'control table insert';
+   f_code_location := 'Write Trailer record';
+   v_tail := 'T'      || v_delimiter
+          || v_rec_cnt|| v_delimiter
+   UTL_FILE.put_line(v_reg_file_ptr,v_tail);
+   UTL_FILE.fclose(v_reg_file_ptr);
+      dbms_output.put_line(chr(10) || '*** Error on ' || f_code_location || ' >> ' || SQLERRM || ' ***');
+
+
