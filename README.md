@@ -1,6 +1,6 @@
 -----< Rag App Agent >-----
 
-This is a RAG Agent that I created.  It uses a PDF as an input.  In this case, "AI GUIDE" by the NATIONAL PROGRAM FOR ARTIFICIAL INTELLIGENC.
+This is a RAG Agent that I created with Flowise.  It uses a PDF as an input.  In this case, "AI GUIDE" by the NATIONAL PROGRAM FOR ARTIFICIAL INTELLIGENC.
 My request to the Agent was, "What are the main categories of ARTIFICIAL INTELLIGENCE TODAY".  The reply is below.
 
 ![image](https://github.com/user-attachments/assets/cdafc51a-84cc-4cb9-89d2-9703daf338d9)
