@@ -1,3 +1,5 @@
+-----< Rag App Agent >-----
+
 This is a RAG Agent that I created.  It uses a PDF as an input.  In this case, "AI GUIDE" by the NATIONAL PROGRAM FOR ARTIFICIAL INTELLIGENC.
 My request to the Agent was, "What are the main categories of ARTIFICIAL INTELLIGENCE TODAY".  The reply is below.
 
